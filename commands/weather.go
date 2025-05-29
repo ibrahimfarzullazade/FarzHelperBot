@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"Helper_Bot/logger"
 	"Helper_Bot/services"
 	"context"
 	"strings"
@@ -48,4 +49,6 @@ func WeatherCommand(ctx context.Context, b *bot.Bot, update *models.Update) {
 		ChatID: update.Message.Chat.ID,
 		Text:   result,
 	})
+	logger.Log("User: %s (ChatID: %d) command: %s", update.Message.From.FirstName, update.Message.Chat.ID, update.Message.Text)
+
 }

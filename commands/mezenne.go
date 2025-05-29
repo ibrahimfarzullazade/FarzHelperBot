@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"Helper_Bot/logger"
 	"Helper_Bot/services"
 	"context"
 	"github.com/go-telegram/bot"
@@ -33,4 +34,6 @@ func MezenneCommand(ctx context.Context, b *bot.Bot, update *models.Update) {
 		ChatID: update.Message.Chat.ID,
 		Text:   result,
 	})
+	logger.Log("User: %s (ChatID: %d) command: %s", update.Message.From.FirstName, update.Message.Chat.ID, update.Message.Text)
+
 }

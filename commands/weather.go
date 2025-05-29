@@ -3,9 +3,16 @@ package commands
 import (
 	"Helper_Bot/services"
 	"context"
+	"strings"
+	"time"
+
 	"github.com/go-telegram/bot"
 	"github.com/go-telegram/bot/models"
-	"strings"
+	"github.com/patrickmn/go-cache"
+)
+
+var (
+	c = cache.New(5*time.Minute, 10*time.Minute)
 )
 
 func init() {
@@ -25,8 +32,17 @@ func WeatherCommand(ctx context.Context, b *bot.Bot, update *models.Update) {
 	}
 
 	city := strings.ToUpper(parts[1])
+	cacheKey := "city:" + city
 
-	result := services.Weather(city)
+	val, found := c.Get(cacheKey)
+	var result string
+
+	if found {
+		result = val.(string)
+	} else {
+		result = services.Weather(city)
+		c.Set(cacheKey, result, cache.DefaultExpiration)
+	}
 
 	b.SendMessage(ctx, &bot.SendMessageParams{
 		ChatID: update.Message.Chat.ID,
